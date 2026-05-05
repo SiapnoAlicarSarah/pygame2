@@ -31,10 +31,20 @@ class Game:
         self.tap_sound = pygame.mixer.Sound("tap.ogg")
         self.correct_sound = pygame.mixer.Sound("win.ogg")
         self.wrong_sound = pygame.mixer.Sound("lose.ogg")
-
+        self.hit_sound = pygame.mixer.Sound("obs_lose.ogg")
+    
+        self.hit_sound.set_volume(0.6)
         self.tap_sound.set_volume(0.5)
         self.correct_sound.set_volume(0.6)
         self.wrong_sound.set_volume(0.6)
+        
+        # ---------------- BACKGROUND MUSIC ----------------
+        self.menu_music = "bg_sound.ogg"
+        self.game_music = "bg_sound.ogg"  # you can change this later
+
+        pygame.mixer.music.load(self.menu_music)
+        pygame.mixer.music.set_volume(0.4)
+        pygame.mixer.music.play(-1)
 
         # ---------------- SYSTEMS ----------------
         self.background = Background(800, 800)
@@ -114,6 +124,10 @@ class Game:
 
     # ---------------- RESET ----------------
     def restart(self):
+        pygame.mixer.music.fadeout(300)
+        pygame.mixer.music.load(self.game_music)
+        pygame.mixer.music.play(-1, fade_ms=300)
+        
         self.obstacles.clear()
         self.meters = 0
         self.spawn_timer = 0
@@ -192,6 +206,11 @@ class Game:
                             self.restart()
 
                 elif self.state == "game_over":
+                    
+                    pygame.mixer.music.fadeout(300)
+                    pygame.mixer.music.load(self.menu_music)
+                    pygame.mixer.music.play(-1, fade_ms=300)
+                                    
                     self.state = "menu"
 
             if self.state == "playing" and not self.paused:
@@ -267,9 +286,11 @@ class Game:
             if self.player.hitbox.colliderect(obs.hitbox):
 
                 if obs.type == "low" and not self.player.is_jumping:
+                    self.hit_sound.play()
                     self.state = "game_over"
 
                 elif obs.type == "high" and self.player.state != "crouch":
+                    self.hit_sound.play()
                     self.state = "game_over"
 
     # ---------------- DRAW ----------------
