@@ -58,8 +58,8 @@ class Gate:
         self.left_x = 40
         self.right_x = 460
 
-        self.y = -320
-        self.speed = 50
+        self.y = -300
+        self.speed = 120
 
         # RANDOM SIDE
         if random.choice([True, False]):
