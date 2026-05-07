@@ -67,6 +67,27 @@ class Game:
         self.meters = 0
         self.meter_speed = 5
 
+        self.easy_highscore = 0
+        self.medium_highscore = 0
+        self.hard_highscore = 0
+
+# LOAD HIGHSCORES
+        try:
+
+            with open("highscore.txt", "r") as file:
+
+                scores = file.readlines()
+
+                self.easy_highscore = int(scores[0].strip())
+                self.medium_highscore = int(scores[1].strip())
+                self.hard_highscore = int(scores[2].strip())
+
+        except:
+
+            self.easy_highscore = 0
+            self.medium_highscore = 0
+            self.hard_highscore = 0
+
         self.survival_time = 0
 
         self.next_gate_meter = 100
@@ -313,8 +334,29 @@ class Game:
         self.background.update()
 
         # ---------------- METERS ----------------
+        current_score = int(self.meters)
         if not self.meter_paused:
             self.meters += self.meter_speed * dt
+        if self.difficulty == "Easy":
+
+            if current_score > self.easy_highscore:
+
+                self.easy_highscore = current_score
+                self.save_highscores()
+
+        elif self.difficulty == "Medium":
+
+            if current_score > self.medium_highscore:
+
+                self.medium_highscore = current_score
+                self.save_highscores()
+
+        elif self.difficulty == "Hard":
+
+            if current_score > self.hard_highscore:
+
+                self.hard_highscore = current_score
+                self.save_highscores()
 
         self.survival_time += dt
 
@@ -428,7 +470,6 @@ class Game:
 
     # ---------------- DRAW ----------------
     def draw(self):
-
         self.screen.fill((30, 30, 30))
 
         # ---------------- MENU ----------------
@@ -539,6 +580,20 @@ class Game:
                 70,
                 30
             )
+            if self.difficulty == "Easy":
+                best_score = self.easy_highscore
+
+            elif self.difficulty == "Medium":
+                best_score = self.medium_highscore
+
+            else:
+                best_score = self.hard_highscore
+
+            self.draw_text(
+                f"Best: {best_score} m",
+                110,
+                150 
+            )
 
             minutes = int(self.survival_time // 60)
             seconds = int(self.survival_time % 60)
@@ -566,6 +621,21 @@ class Game:
 
             if self.state == "game_over":
 
+                if self.difficulty == "Easy":
+                    best_score = self.easy_highscore
+
+                elif self.difficulty == "Medium":
+                    best_score = self.medium_highscore
+
+                else:
+                    best_score = self.hard_highscore
+
+                self.draw_text(
+                    f"HIGHSCORE: {best_score} m",
+                    400,
+                    380
+                )
+
                 self.draw_text(
                     "GAME OVER",
                     400,
@@ -580,6 +650,14 @@ class Game:
                 )
 
         pygame.display.flip()
+
+    def save_highscores(self):
+
+        with open("highscore.txt", "w") as file:
+
+            file.write(f"{self.easy_highscore}\n")
+            file.write(f"{self.medium_highscore}\n")
+            file.write(f"{self.hard_highscore}\n")
 
     # ---------------- RUN ----------------
     def run(self):
