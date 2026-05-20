@@ -94,7 +94,7 @@ class Gate:
 
         if lane == 0:
             chosen = "left"
-        elif lane == 2:
+        elif lane == 1:
             chosen = "right"
         else:
             return False
