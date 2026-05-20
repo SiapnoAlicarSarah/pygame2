@@ -7,7 +7,7 @@ class Character:
         self.height = height
         self.char_type = char_type  # 🔥 WHICH CHARACTER
 
-        self.lane = 1
+        self.lane = 0
         self.y = height - 200
         self.x = self.lanes.get_lane_x(self.lane)
 
@@ -58,13 +58,15 @@ class Character:
     def handle_input(self, event):
         if event.type == pygame.KEYDOWN:
 
-            if event.key == pygame.K_LEFT and self.lane > 0 and self.move_cd == 0:
-                self.lane -= 1
-                self.move_cd = self.move_delay
+            if event.key == pygame.K_LEFT and self.move_cd == 0:
+                if self.lane == 1:
+                    self.lane = 0
+                    self.move_cd = self.move_delay
 
-            if event.key == pygame.K_RIGHT and self.lane < 2 and self.move_cd == 0:
-                self.lane += 1
-                self.move_cd = self.move_delay
+            if event.key == pygame.K_RIGHT and self.move_cd == 0:
+                if self.lane == 0:
+                    self.lane = 1
+                    self.move_cd = self.move_delay
 
             if event.key == pygame.K_UP and not self.is_jumping and self.jump_cd == 0:
                 self.is_jumping = True
