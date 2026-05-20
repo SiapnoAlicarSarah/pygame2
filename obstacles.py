@@ -7,34 +7,51 @@ class Obstacle:
         self.lanes = lanes
         self.height = height
 
-        self.lane = random.randint(0, 2)
         self.type = random.choice(["low", "high"])
 
-        self.x = self.lanes.get_lane_x(self.lane)
+        # --------------------------------
+        # CUSTOM SPAWN POSITIONS
+        # --------------------------------
+        self.spawn_positions = [
+            200,   # left lane x position
+            590    # right lane x position
+        ]
 
-        # -----------------------------
-        # START FAR AWAY (HORIZON)
-        # -----------------------------
-        self.y = -150  # start off-screen (far distance)
+        # choose one of your positions
+        self.x = random.choice(self.spawn_positions)
 
-        self.base_speed = 220  # slow at start
-        self.max_speed = 650   # fast when near player
+        # start far away
+        self.y = 200
+
+        self.base_speed = 220
+        self.max_speed = 650
 
         # load images
         if self.type == "low":
-            self.base_image = pygame.image.load("low_obstacle.png").convert_alpha()
+            self.base_image = pygame.image.load(
+                "low_obstacle.png"
+            ).convert_alpha()
+
             self.base_size = (80, 80)
             self.hitbox_size = (60, 60)
+
         else:
-            self.base_image = pygame.image.load("high_obstacle.png").convert_alpha()
+            self.base_image = pygame.image.load(
+                "high_obstacle.png"
+            ).convert_alpha()
+
             self.base_size = (160, 160)
             self.hitbox_size = (60, 90)
 
         self.image = self.base_image
-        self.rect = self.image.get_rect(center=(self.x, self.y))
-        self.hitbox = pygame.Rect(0, 0, *self.hitbox_size)
+        self.rect = self.image.get_rect(
+            center=(self.x, self.y)
+        )
 
-        # perspective settings
+        self.hitbox = pygame.Rect(
+            0, 0, *self.hitbox_size
+        )
+
         self.min_scale = 0.3
         self.max_scale = 3
 
